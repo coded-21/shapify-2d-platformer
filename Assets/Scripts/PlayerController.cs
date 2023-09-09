@@ -56,6 +56,11 @@ public class PlayerController : MonoBehaviour, IDamageable
         {
             playerCombatSystem.UseAbilityTwo();
         }
+
+        if (Input.GetKeyDown(KeyCode.I))
+        {
+            playerCombatSystem.UseBasicAttack();
+        }
     }
 
     private void FixedUpdate()
@@ -67,12 +72,14 @@ public class PlayerController : MonoBehaviour, IDamageable
     {
         isFacingRight = false;
         horizontalInput = -1f;
+        gameObject.transform.localScale = new Vector3(-1, 1, 1);
     }
 
     private void MoveRight()
     {
         isFacingRight = true;
         horizontalInput = 1f;
+        gameObject.transform.localScale = new Vector3(1, 1, 1);
     }
 
     private void StopHorizontalMovement()
@@ -98,12 +105,8 @@ public class PlayerController : MonoBehaviour, IDamageable
             healthDisplay.text = $"HP: {health}";
         }
 
-        /// add knockback here
-        // Knockback(knockback, dir);
-    }
-
-    private void Knockback(float knockback, Vector2 dir)
-    {
-        throw new NotImplementedException();
+        // knockback
+        gameObject.GetComponent<Rigidbody2D>()?.AddForce(knockback * dir, ForceMode2D.Impulse);
+        Debug.Log("Player got knocked back in " + knockback * dir);
     }
 }

@@ -10,7 +10,10 @@ public class EnemyAttackCollider : MonoBehaviour
     {
         if (!collision.CompareTag("Enemy"))
         {
-            collision.GetComponent<IDamageable>()?.TakeDamage(enemy.AttackDamage, 0 , Vector2.zero);
+            // dir
+            Vector2 dir = new Vector2((collision.transform.position - gameObject.transform.position).normalized.x, 1);
+
+            collision.GetComponent<IDamageable>()?.TakeDamage(enemy.AttackDamage, enemy.KnockbackForce , dir);
             gameObject.SetActive(false);
         }
     }

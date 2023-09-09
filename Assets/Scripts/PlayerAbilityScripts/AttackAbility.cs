@@ -30,14 +30,8 @@ public class AttackAbility : Ability
 
     public override bool IsOnCooldown()
     {
-        if ((Time.time - LastUsedTime) >= Cooldown)
-        {
-            return false;
-        }
-        else
-        {
-            return true;
-        }
+        if ((Time.time - LastUsedTime) >= Cooldown) return false;
+        else return true;
     }
 
     public override void UseAbility(PlayerController player)
