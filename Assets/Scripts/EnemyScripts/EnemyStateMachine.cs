@@ -18,6 +18,7 @@ public class EnemyStateMachine : MonoBehaviour
     public float moveSpeed;
     public float detectionDistance;
     public float awarenessRadius;
+    public float enemyAttackCooldown;
 
     [SerializeField] private float attackDistance; public float AttackDistance { get => attackDistance; }
     [SerializeField] private float suspicionThreshold; public float SuspicionThreshold { get => suspicionThreshold; }

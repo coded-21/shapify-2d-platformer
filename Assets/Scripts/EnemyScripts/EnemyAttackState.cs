@@ -18,9 +18,9 @@ public class EnemyAttackState : EnemyAwareState
 
     public override void UpdateState(EnemyStateMachine enemy)
     {
-        if (elapsedTime > 3f)
+        if (elapsedTime > enemy.enemyAttackCooldown)
         {
-            enemy.SetState(new EnemySearchingState());
+            enemy.SetState(new EnemyChaseState());
         }
         else
         {

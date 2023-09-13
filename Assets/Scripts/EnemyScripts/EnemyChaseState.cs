@@ -31,6 +31,8 @@ public class EnemyChaseState : EnemyAwareState
         if (Mathf.Abs(targetPosition.x - enemy.transform.position.x) > attackDistance) // still chasing target
         {
             enemy.transform.position = Vector2.MoveTowards(enemy.transform.position, targetPosition, enemy.moveSpeed * Time.deltaTime);
+
+            
         }
         else // if target position reached
         {
@@ -52,5 +54,14 @@ public class EnemyChaseState : EnemyAwareState
         // update target location
         targetPosition = new Vector2(player.transform.position.x, enemy.transform.position.y);
         playerInSight = true;
+
+        // flip enemy
+        if ((targetPosition.x - enemy.transform.position.x) < 0)
+        {
+            enemy.transform.localScale = new Vector3(-1, 1, 1);
+        } else if ((targetPosition.x - enemy.transform.position.x) > 0)
+        {
+            enemy.transform.localScale = new Vector3(1, 1, 1);
+        }
     }
 }
