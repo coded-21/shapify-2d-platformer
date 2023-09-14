@@ -9,7 +9,8 @@ public class PlayerController : MonoBehaviour, IDamageable
     [SerializeField] private float moveSpeed;
     [SerializeField] private float jumpForce;
     [SerializeField] private float health;
-
+    [SerializeField] private int inventorySize;
+    [SerializeField] List<string> items = new List<string>();
     [SerializeField] TMP_Text healthDisplay;
 
     PlayerCombatSystem playerCombatSystem;
@@ -109,4 +110,27 @@ public class PlayerController : MonoBehaviour, IDamageable
         gameObject.GetComponent<Rigidbody2D>()?.AddForce(knockback * dir, ForceMode2D.Impulse);
         Debug.Log("Player got knocked back in " + knockback * dir);
     }
+
+    public bool IsInventoryFull()
+    {
+        return (items.Count < inventorySize) ? false : true;
+    }
+
+    public bool CheckInventoryForItem(string item)
+    {
+        foreach (string inventoryItem in items)
+        {
+            if (inventoryItem == item)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void InventoryAddItem(string item)
+    {
+        items.Add(item);
+    }
+
 }
