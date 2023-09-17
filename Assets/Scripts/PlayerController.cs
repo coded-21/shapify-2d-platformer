@@ -10,8 +10,12 @@ public class PlayerController : MonoBehaviour, IDamageable
     [SerializeField] private float jumpForce;
     [SerializeField] private float health;
     [SerializeField] private int inventorySize;
-    [SerializeField] List<string> items = new List<string>();
     [SerializeField] TMP_Text healthDisplay;
+    [SerializeField] Transform groundCheck;
+    [SerializeField] LayerMask groundLayer;
+    [SerializeField] float groundCheckRadius = 0.1f;
+    [SerializeField] private bool isGrounded = true;
+    [SerializeField] List<string> items = new List<string>();
 
     PlayerCombatSystem playerCombatSystem;
     public bool isFacingRight { get; private set; }
@@ -28,6 +32,12 @@ public class PlayerController : MonoBehaviour, IDamageable
 
     private void Update()
     {
+        GetInput();
+        isGrounded = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
+    }
+
+    private void GetInput()
+    {
         if (Input.GetKey(KeyCode.A))
         {
             MoveLeft();
@@ -38,14 +48,17 @@ public class PlayerController : MonoBehaviour, IDamageable
             MoveRight();
         }
 
-        if(Input.GetKeyUp(KeyCode.A) || Input.GetKeyUp(KeyCode.D))
+        if (Input.GetKeyUp(KeyCode.A) || Input.GetKeyUp(KeyCode.D))
         {
             horizontalInput = 0;
         }
 
         if (Input.GetKeyDown(KeyCode.J))
         {
-            Jump();
+            if (isGrounded)
+            {
+                Jump();
+            }
         }
 
         if (Input.GetKeyDown(KeyCode.T))

@@ -32,6 +32,9 @@ public class Elevator : MonoBehaviour
 
     private IEnumerator ElevatorCoroutine()
     {
+        if (isActive) { yield break; }
+        isActive = true;
+
         Vector3 startPosition = elevatorObject.transform.localPosition;
         Vector3 endPosition = startPosition;
         endPosition.y = isAtTop ? (endPosition.y - elevation) : (endPosition.y + elevation);
@@ -52,5 +55,6 @@ public class Elevator : MonoBehaviour
 
         elevatorObject.transform.localPosition = endPosition;
         isAtTop = !isAtTop;
+        isActive = false;
     }
 }
