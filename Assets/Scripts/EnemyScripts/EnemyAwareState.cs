@@ -21,8 +21,9 @@ public class EnemyAwareState : EnemyBaseState
     public override void UpdateState(EnemyStateMachine enemy)
     {
         // update code - constantly shoot a ray towards player position and if player is hit, chase player
+
         Vector3 raycastDir = (enemy.player.transform.position - enemy.transform.position).normalized;
-        RaycastHit2D hit = Physics2D.Raycast(enemy.transform.position, raycastDir, enemy.awarenessRadius, enemy.nonEnemyLayerMask);
+        RaycastHit2D hit = Physics2D.Raycast(enemy.transform.position, raycastDir, enemy.awarenessRadius, enemy.playerLayerMask);
 
         if (hit)
         {

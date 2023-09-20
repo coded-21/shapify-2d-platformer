@@ -37,7 +37,7 @@ public class EnemySuspicionState : EnemyUnawareState
         // if suspicion level crosses a threshold, transition to aware state
         if (currentSuspicionLevel >= suspicionThreshold)
         {
-            enemy.SetState(new EnemyAwareState());
+            enemy.SetState(new EnemyChaseState());
         }
 
         // gradually decrease suspicion level if player not seen

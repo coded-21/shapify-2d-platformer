@@ -17,15 +17,33 @@ public class EnemyUnawareState : EnemyBaseState
 
     public override void UpdateState(EnemyStateMachine enemy)
     {
-        // Enemy FOV
-        RaycastHit2D hit = Physics2D.Raycast(enemy.transform.position, -enemy.transform.right, enemy.detectionDistance, enemy.playerLayerMask);
+        /*
+            // Enemy FOV
+            RaycastHit2D hit = Physics2D.Raycast(enemy.transform.position, -enemy.transform.right, enemy.detectionDistance, enemy.playerLayerMask);
+            if (hit)
+            {
+                OnPlayerSeen(enemy);
+            }
+
+            // Debug
+            Debug.DrawLine(enemy.transform.position, enemy.transform.position + (Vector3.left * enemy.detectionDistance), Color.yellow, Time.deltaTime);
+        */
+
+        // update code - constantly shoot a ray towards player position and if player is hit, chase player
+
+        Vector3 raycastDir = (enemy.player.transform.position - enemy.transform.position).normalized;
+        RaycastHit2D hit = Physics2D.Raycast(enemy.transform.position, raycastDir, enemy.detectionDistance, enemy.playerLayerMask);
+
         if (hit)
         {
-            OnPlayerSeen(enemy);
+            if (hit.collider.CompareTag("Player"))
+            {
+                OnPlayerSeen(enemy);
+            }
         }
 
         // Debug
-        Debug.DrawLine(enemy.transform.position, enemy.transform.position + (Vector3.left * enemy.detectionDistance), Color.yellow, Time.deltaTime);
+        Debug.DrawLine(enemy.transform.position, enemy.transform.position + (raycastDir * enemy.detectionDistance), Color.yellow, Time.deltaTime);
     }
 
     public virtual void OnPlayerSeen(EnemyStateMachine enemy)

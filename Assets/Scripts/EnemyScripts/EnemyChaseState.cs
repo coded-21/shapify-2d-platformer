@@ -14,6 +14,7 @@ public class EnemyChaseState : EnemyAwareState
         player = enemy.player;
         attackDistance = enemy.AttackDistance;
         targetPosition = new Vector2(player.transform.position.x, enemy.transform.position.y);
+        enemy.FaceTarget(targetPosition);
         Debug.Log("Entered Chase State");
     }
 
@@ -26,13 +27,17 @@ public class EnemyChaseState : EnemyAwareState
     {
         base.UpdateState(enemy);
 
-        // Chasing Movement Code
+        // Ground Check before moving
+        if (!enemy.IsGrounded)
+        {
+            HandleNowhereToGo(enemy);
+            return;
+        }
 
+        // Chasing Movement Code
         if (Mathf.Abs(targetPosition.x - enemy.transform.position.x) > attackDistance) // still chasing target
         {
             enemy.transform.position = Vector2.MoveTowards(enemy.transform.position, targetPosition, enemy.moveSpeed * Time.deltaTime);
-
-            
         }
         else // if target position reached
         {
@@ -55,13 +60,15 @@ public class EnemyChaseState : EnemyAwareState
         targetPosition = new Vector2(player.transform.position.x, enemy.transform.position.y);
         playerInSight = true;
 
-        // flip enemy
-        if ((targetPosition.x - enemy.transform.position.x) < 0)
-        {
-            enemy.transform.localScale = new Vector3(-1, 1, 1);
-        } else if ((targetPosition.x - enemy.transform.position.x) > 0)
-        {
-            enemy.transform.localScale = new Vector3(1, 1, 1);
-        }
+        // flip enemy direction
+        enemy.FaceTarget(targetPosition);
+    }
+
+    private void HandleNowhereToGo(EnemyStateMachine enemy)
+    {
+        // if playerInSight, do one thing
+
+        // if !playerInSight, enter SearchingState
+        enemy.SetState(new EnemySearchingState());
     }
 }
