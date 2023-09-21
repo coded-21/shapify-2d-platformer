@@ -356,14 +356,16 @@ MonoBehaviour:
   groundCheckRadius: 2
   wallCheckRadius: 1
   isGrounded: 0
+  isJumping: 0
   groundLayerMask:
     serializedVersion: 2
     m_Bits: 256
   groundCheck: {fileID: 3288165709595904458}
   wallCheck: {fileID: 850915964}
   furtherGroundCheck: {fileID: 2030904363}
-  jumpForce: 10
+  jumpForce: 15
   jumpCooldown: 1
+  jumpDirectionConfig: 8
 --- !u!1 &2708046379216631573
 GameObject:
   m_ObjectHideFlags: 0

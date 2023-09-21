@@ -27,12 +27,15 @@ public class EnemyStateMachine : MonoBehaviour
     [SerializeField] private float groundCheckRadius = 5f;
     [SerializeField] private float wallCheckRadius = 3f;
     [SerializeField] private bool isGrounded;
+    [SerializeField] private bool isJumping;
     [SerializeField] private LayerMask groundLayerMask;
     [SerializeField] private Transform groundCheck;
     [SerializeField] private Transform wallCheck;
     [SerializeField] private Transform furtherGroundCheck;
     [SerializeField] private float jumpForce;
     [SerializeField] private float jumpCooldown;
+    [Range(1, 10)]
+    [SerializeField] private float jumpDirectionConfig;
     private float lastJumpTime;
 
 
@@ -40,6 +43,7 @@ public class EnemyStateMachine : MonoBehaviour
     public float AttackDistance { get => attackDistance; }
     public float SuspicionThreshold { get => suspicionThreshold; }
     public bool IsGrounded { get => isGrounded; }
+    public bool IsJumping { get => isJumping; }
 
     // Enemy States
     private EnemyBaseState currentState;
@@ -63,7 +67,7 @@ public class EnemyStateMachine : MonoBehaviour
     {
         currentState.UpdateState(this);
         GroundCheck();
-        ObstacleCheck();
+        WallCheck();
     }
 
     public void SetState(EnemyBaseState newState)
@@ -87,6 +91,7 @@ public class EnemyStateMachine : MonoBehaviour
         if (hit)
         {
             isGrounded = true;
+            isJumping = false;
         } else
         {
             FurtherGroundCheck();
@@ -103,9 +108,10 @@ public class EnemyStateMachine : MonoBehaviour
         if (hit) // there is further ground within range and enemy can jump to it
         {
             HandleJump();
-        } else
+        } else // there is no further ground within range
         {
             isGrounded = false;
+            isJumping = false;
         }
     }
 
@@ -122,7 +128,7 @@ public class EnemyStateMachine : MonoBehaviour
         // if obstacle found, check if it is a wall
         if (hit)
         {
-            WallCheck();
+            HandleObstacleInteraction();
         }
     }
 
@@ -136,9 +142,9 @@ public class EnemyStateMachine : MonoBehaviour
         if (hit) // obstacle is a wall
         {
             Debug.Log("Hit a wall.");
-        } else // no wall; jump over obstacle or destroy it
+        } else // no wall jump over obstacle or destroy it
         {
-            HandleObstacleInteraction();
+            ObstacleCheck();
         }
     }
 
@@ -157,8 +163,10 @@ public class EnemyStateMachine : MonoBehaviour
     {
         if (lastJumpTime + jumpCooldown <= Time.time)
         {
-            gameObject.GetComponent<Rigidbody2D>().AddForce(jumpForce * Vector2.up, ForceMode2D.Impulse);
+            gameObject.GetComponent<Rigidbody2D>().AddForce(
+                jumpForce * (Vector3.up + (transform.right/jumpDirectionConfig)).normalized, ForceMode2D.Impulse);
             lastJumpTime = Time.time;
+            isJumping = true;
         }
     }
 

@@ -28,7 +28,7 @@ public class EnemyChaseState : EnemyAwareState
         base.UpdateState(enemy);
 
         // Ground Check before moving
-        if (!enemy.IsGrounded)
+        if (!enemy.IsGrounded && !enemy.IsJumping)
         {
             HandleNowhereToGo(enemy);
             return;
