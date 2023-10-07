@@ -21,6 +21,9 @@ public class PlayerController : MonoBehaviour, IDamageable
     public bool isFacingRight { get; private set; }
     Rigidbody2D rb;
     private float horizontalInput;
+    private bool isStunned = false;
+    private float lastStunnedTime;
+    [SerializeField] private float stunDuration = 0.2f;
 
     private void Start()
     {
@@ -32,23 +35,38 @@ public class PlayerController : MonoBehaviour, IDamageable
 
     private void Update()
     {
-        GetInput();
+        if (isStunned && (Time.time - lastStunnedTime >= stunDuration))
+        {
+            isStunned = false;
+        }
         isGrounded = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
+        GetInput();
+
+
+        // this is more of a quick fix, but it works for now. may cause minor bugs later
+        //if (!inControl)
+        //{
+        //    if (isGrounded && (lastLostControlTime + lostControlRecoveryTime) >= Time.time)
+        //    {
+        //        inControl = true;
+        //    }
+        //}
     }
 
     private void GetInput()
     {
+        if (isStunned)
+        {
+            return;
+        }
+
         if (Input.GetKey(KeyCode.A))
         {
             MoveLeft();
-        }
-
-        if (Input.GetKey(KeyCode.D))
+        } else if (Input.GetKey(KeyCode.D))
         {
             MoveRight();
-        }
-
-        if (Input.GetKeyUp(KeyCode.A) || Input.GetKeyUp(KeyCode.D))
+        } else
         {
             horizontalInput = 0;
         }
@@ -79,6 +97,10 @@ public class PlayerController : MonoBehaviour, IDamageable
 
     private void FixedUpdate()
     {
+        if (isStunned)
+        {
+            return;
+        }
         rb.velocity = new Vector2(horizontalInput * moveSpeed, rb.velocity.y);
     }
 
@@ -112,6 +134,9 @@ public class PlayerController : MonoBehaviour, IDamageable
         {
             Debug.Log("Player has unalived.");
             healthDisplay.text = $"HP: X_X";
+
+            // exit to main menu
+            GameManager.Instance.PlayerDeath();
         }
         else
         {
@@ -120,8 +145,16 @@ public class PlayerController : MonoBehaviour, IDamageable
         }
 
         // knockback
+        Stun();
         gameObject.GetComponent<Rigidbody2D>()?.AddForce(knockback * dir, ForceMode2D.Impulse);
         Debug.Log("Player got knocked back in " + knockback * dir);
+    }
+
+    private void Stun()
+    {
+        horizontalInput = 0;
+        lastStunnedTime = Time.time;
+        isStunned = true;
     }
 
     public bool IsInventoryFull()

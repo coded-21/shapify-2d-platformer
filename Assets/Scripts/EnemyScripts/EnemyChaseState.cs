@@ -35,6 +35,11 @@ public class EnemyChaseState : EnemyAwareState
         }
 
         // Chasing Movement Code
+        if (enemy.IsJumping)
+        {
+            return;
+        }
+
         if (Mathf.Abs(targetPosition.x - enemy.transform.position.x) > attackDistance) // still chasing target
         {
             enemy.transform.position = Vector2.MoveTowards(enemy.transform.position, targetPosition, enemy.moveSpeed * Time.deltaTime);

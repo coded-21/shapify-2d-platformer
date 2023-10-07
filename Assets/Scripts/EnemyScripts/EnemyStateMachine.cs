@@ -24,7 +24,8 @@ public class EnemyStateMachine : MonoBehaviour
 
     [SerializeField] private float attackDistance;
     [SerializeField] private float suspicionThreshold;
-    [SerializeField] private float groundCheckRadius = 5f;
+    [SerializeField] private float groundCheckRadius = 1f;
+    [SerializeField] private float furtherGroundCheckRadius = 5f;
     [SerializeField] private float wallCheckRadius = 3f;
     [SerializeField] private bool isGrounded;
     [SerializeField] private bool isJumping;
@@ -82,11 +83,10 @@ public class EnemyStateMachine : MonoBehaviour
 
     private void GroundCheck()
     {
+        // if (lastJumpTime + jumpCooldown > Time.time) return;
+
         // check for immediate ground
         RaycastHit2D hit = Physics2D.Raycast(groundCheck.position, Vector2.down, groundCheckRadius, groundLayerMask);
-        Debug.DrawLine(groundCheck.position,
-            new Vector3(groundCheck.position.x, groundCheck.position.y - groundCheckRadius, groundCheck.position.z),
-            color: Color.green);
 
         if (hit)
         {
@@ -96,13 +96,18 @@ public class EnemyStateMachine : MonoBehaviour
         {
             FurtherGroundCheck();
         }
+
+        // Debug
+        Debug.DrawLine(groundCheck.position,
+            new Vector3(groundCheck.position.x, groundCheck.position.y - groundCheckRadius, groundCheck.position.z),
+            color: Color.green);
     }
 
     private void FurtherGroundCheck()
     {
-        RaycastHit2D hit = Physics2D.Raycast(furtherGroundCheck.position, Vector2.down, groundCheckRadius, groundLayerMask);
+        RaycastHit2D hit = Physics2D.Raycast(furtherGroundCheck.position, Vector2.down, furtherGroundCheckRadius, groundLayerMask);
         Debug.DrawLine(furtherGroundCheck.position,
-            new Vector3(furtherGroundCheck.position.x, furtherGroundCheck.position.y - groundCheckRadius, furtherGroundCheck.position.z),
+            new Vector3(furtherGroundCheck.position.x, furtherGroundCheck.position.y - furtherGroundCheckRadius, furtherGroundCheck.position.z),
             color: Color.green);
 
         if (hit) // there is further ground within range and enemy can jump to it

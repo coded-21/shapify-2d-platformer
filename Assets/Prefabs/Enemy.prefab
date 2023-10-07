@@ -353,7 +353,8 @@ MonoBehaviour:
   isObjectDestroyer: 0
   attackDistance: 2
   suspicionThreshold: 1
-  groundCheckRadius: 2
+  groundCheckRadius: 3
+  furtherGroundCheckRadius: 6
   wallCheckRadius: 1
   isGrounded: 0
   isJumping: 0
@@ -365,7 +366,7 @@ MonoBehaviour:
   furtherGroundCheck: {fileID: 2030904363}
   jumpForce: 15
   jumpCooldown: 1
-  jumpDirectionConfig: 8
+  jumpDirectionConfig: 2
 --- !u!1 &2708046379216631573
 GameObject:
   m_ObjectHideFlags: 0
