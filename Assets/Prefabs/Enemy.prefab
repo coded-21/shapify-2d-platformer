@@ -355,7 +355,7 @@ MonoBehaviour:
   suspicionThreshold: 1
   groundCheckRadius: 3
   furtherGroundCheckRadius: 6
-  wallCheckRadius: 1
+  wallCheckRadius: 2
   isGrounded: 0
   isJumping: 0
   groundLayerMask:

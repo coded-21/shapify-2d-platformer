@@ -26,7 +26,7 @@ public class EnemyStateMachine : MonoBehaviour
     [SerializeField] private float suspicionThreshold;
     [SerializeField] private float groundCheckRadius = 1f;
     [SerializeField] private float furtherGroundCheckRadius = 5f;
-    [SerializeField] private float wallCheckRadius = 3f;
+    [SerializeField] private float wallCheckRadius = 2f;
     [SerializeField] private bool isGrounded;
     [SerializeField] private bool isJumping;
     [SerializeField] private LayerMask groundLayerMask;
@@ -83,7 +83,7 @@ public class EnemyStateMachine : MonoBehaviour
 
     private void GroundCheck()
     {
-        // if (lastJumpTime + jumpCooldown > Time.time) return;
+        // if (lastJumpTime + jumpCooldown > Time.time) return; // enable if you want enemy to stop briefly after jumping
 
         // check for immediate ground
         RaycastHit2D hit = Physics2D.Raycast(groundCheck.position, Vector2.down, groundCheckRadius, groundLayerMask);
@@ -123,7 +123,8 @@ public class EnemyStateMachine : MonoBehaviour
     private void ObstacleCheck()
     {
         // check for obstacle in path
-        RaycastHit2D hit = Physics2D.Raycast(groundCheck.position, transform.right, wallCheckRadius, groundLayerMask);
+        // RaycastHit2D hit = Physics2D.Raycast(groundCheck.position, transform.right, wallCheckRadius, groundLayerMask);
+        RaycastHit2D hit = Physics2D.Raycast(wallCheck.position, transform.right, wallCheckRadius, groundLayerMask);
 
         // debug line
         Debug.DrawLine(groundCheck.position,
@@ -131,24 +132,38 @@ public class EnemyStateMachine : MonoBehaviour
             color: Color.cyan);
 
         // if obstacle found, check if it is a wall
-        if (hit)
+        if (!hit)
         {
+            // it was an object
             HandleObstacleInteraction();
+        }
+        else
+        {
+            Debug.Log("Hit a wall");
         }
     }
 
     private void WallCheck()
     {
-        RaycastHit2D hit = Physics2D.Raycast(wallCheck.position, transform.right, wallCheckRadius, groundLayerMask);
-        Debug.DrawLine(wallCheck.position,
-            new Vector3(wallCheck.position.x - wallCheckRadius, wallCheck.position.y, wallCheck.position.z),
-            color: Color.cyan);
+        // RaycastHit2D hit = Physics2D.Raycast(wallCheck.position, transform.right, wallCheckRadius, groundLayerMask);
 
-        if (hit) // obstacle is a wall
+        //if (hit) // obstacle is a wall
+        //{
+        //    Debug.Log("Hit a wall.");
+        //} else // no wall jump over obstacle or destroy it
+        //{
+        //    ObstacleCheck();
+        //}
+
+        Vector3 offset = groundCheck.position + (transform.right * wallCheckRadius);
+        Debug.DrawLine(wallCheck.position,
+            offset,
+            color: Color.magenta);
+
+        if (Physics2D.OverlapArea(wallCheck.position, offset, groundLayerMask))
         {
-            Debug.Log("Hit a wall.");
-        } else // no wall jump over obstacle or destroy it
-        {
+            // there is a wall or object in front. Check which one it is
+            Debug.Log("Hit wall or object. Checking now.");
             ObstacleCheck();
         }
     }

@@ -13,7 +13,7 @@ public class PlayerController : MonoBehaviour, IDamageable
     [SerializeField] TMP_Text healthDisplay;
     [SerializeField] Transform groundCheck;
     [SerializeField] LayerMask groundLayer;
-    [SerializeField] float groundCheckRadius = 0.1f;
+    // [SerializeField] float groundCheckRadius = 0.1f;
     [SerializeField] private bool isGrounded = true;
     [SerializeField] List<string> items = new List<string>();
 
@@ -39,8 +39,15 @@ public class PlayerController : MonoBehaviour, IDamageable
         {
             isStunned = false;
         }
-        isGrounded = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
+        // isGrounded = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
+        isGrounded = Physics2D.OverlapArea(
+            groundCheck.position + new Vector3(-0.5f, 0, 0),
+            groundCheck.position + new Vector3(0.5f, -0.1f, 0),
+            groundLayer);
         GetInput();
+
+        // ground check area debug
+        Debug.DrawLine(groundCheck.position + new Vector3(-0.5f, 0, 0), groundCheck.position + new Vector3(-0.5f, -1, 0), Color.magenta);
 
 
         // this is more of a quick fix, but it works for now. may cause minor bugs later
@@ -63,10 +70,14 @@ public class PlayerController : MonoBehaviour, IDamageable
         if (Input.GetKey(KeyCode.A))
         {
             MoveLeft();
-        } else if (Input.GetKey(KeyCode.D))
+        }
+
+        if (Input.GetKey(KeyCode.D))
         {
             MoveRight();
-        } else
+        }
+
+        if (Input.GetKeyUp(KeyCode.A) || Input.GetKeyUp(KeyCode.D))
         {
             horizontalInput = 0;
         }
@@ -104,26 +115,26 @@ public class PlayerController : MonoBehaviour, IDamageable
         rb.velocity = new Vector2(horizontalInput * moveSpeed, rb.velocity.y);
     }
 
-    private void MoveLeft()
+    public void MoveLeft()
     {
         isFacingRight = false;
         horizontalInput = -1f;
         gameObject.transform.localScale = new Vector3(-1, 1, 1);
     }
 
-    private void MoveRight()
+    public void MoveRight()
     {
         isFacingRight = true;
         horizontalInput = 1f;
         gameObject.transform.localScale = new Vector3(1, 1, 1);
     }
 
-    private void StopHorizontalMovement()
+    public void StopHorizontalMovement()
     {
         horizontalInput = 0;
     }
 
-    private void Jump()
+    public void Jump()
     {
         rb.AddForce(Vector3.up * jumpForce);
     }
