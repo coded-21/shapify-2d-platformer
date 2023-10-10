@@ -1,6 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class TeleportAbility : Ability
@@ -20,8 +18,14 @@ public class TeleportAbility : Ability
         }
 
     private GameObject _card;
+    private PlayerController player;
     public int dir { get; private set; }
     private bool abilityInProgress = false;
+
+    private void Start()
+    {
+        player = FindObjectOfType<PlayerController>();
+    }
 
     public override bool IsOnCooldown()
     {
@@ -54,7 +58,7 @@ public class TeleportAbility : Ability
 
     public void Teleport()
     {
-        gameObject.transform.position = _card.transform.position;
+        player.transform.position = _card.transform.position;
         _card.GetComponent<TeleportAbilityCard>().Destroy();
         abilityInProgress = false;
         LastUsedTime = Time.time;
